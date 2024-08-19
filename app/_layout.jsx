@@ -1,15 +1,18 @@
-import { View, Text ,StyleSheet} from 'react-native'
-import {Stack,SplashScreen} from 'expo-router'
-import React from 'react'
-import { useEffect,useState } from 'react'
-import { useFonts } from 'expo-font'
+// app/_layout.jsx (or RootLayout.jsx)
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { Stack, SplashScreen } from 'expo-router';
+import { useFonts } from 'expo-font';
 import { StatusBar } from 'expo-status-bar';
 import * as Contacts from 'expo-contacts';
 import * as Location from 'expo-location';
-
+import { Accelerometer } from 'expo-sensors';
+import axios from 'axios';
+import * as Notifications from 'expo-notifications';
+import registerNNPushToken from 'native-notify';
+import { useRouter } from 'expo-router';
 
 const RootLayout = () => {
-  // console.log('RootLayout')
   const [contacts, setContacts] = useState([]);
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
@@ -21,7 +24,6 @@ const RootLayout = () => {
         const { data } = await Contacts.getContactsAsync({
           fields: [Contacts.Fields.PhoneNumbers],
         });
-
         if (data.length > 0) {
           setContacts(data);
         }
@@ -33,15 +35,31 @@ const RootLayout = () => {
         setErrorMsg('Permission to access location was denied');
         return;
       }
-
       let currentLocation = await Location.getCurrentPositionAsync({});
       setLocation(currentLocation);
     })();
   }, []);
 
+  const router = useRouter(); // Use useRouter from expo-router
 
+  // Register Native Notify token
+  registerNNPushToken(23095, 't7U6tMbwevUKc9gC7Eddsf');
+  useEffect(() => {
 
-    
+    // Handle incoming notifications
+    const subscription = Notifications.addNotificationResponseReceivedListener(response => {
+      // console.log('Notification Data:', response.notification.request.content);
+      const { screen } = response.notification.request.content.data;
+      console.log(screen);
+      if (screen) {
+        // Navigate to the specific screen using Expo Router
+        router.push('/emergency');
+      }
+    });
+
+    return () => subscription.remove();
+  }, []);
+
   const [fontsLoaded, error] = useFonts({
     "Poppins-Black": require("../assets/fonts/Poppins-Black.ttf"),
     "Poppins-Bold": require("../assets/fonts/Poppins-Bold.ttf"),
@@ -53,39 +71,29 @@ const RootLayout = () => {
     "Poppins-SemiBold": require("../assets/fonts/Poppins-SemiBold.ttf"),
     "Poppins-Thin": require("../assets/fonts/Poppins-Thin.ttf"),
   });
-  
+
   useEffect(() => {
     if (error) throw error;
-  
+
     if (fontsLoaded) {
       SplashScreen.hideAsync();
     }
   }, [fontsLoaded, error]);
-  // useEffect(() => {
-  //   registerNNPushToken(23095, 't7U6tMbwevUKc9gC7Eddsf');
-  // }, []);
-  
+
   if (!fontsLoaded && !error) {
     return null;
   }
+
   return (
-    // Use Stack
     <>
-    <Stack>
-      <Stack.Screen name="index" options={{headerShown:false}}/>
-    </Stack>
+      <Stack>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+      </Stack>
       <StatusBar style="auto" />
     </>
-  )
-}
+  );
+};
 
-export default RootLayout
+export default RootLayout;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    // backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-})
+
