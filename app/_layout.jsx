@@ -8,8 +8,8 @@ import * as Contacts from 'expo-contacts';
 import * as Location from 'expo-location';
 import { Accelerometer } from 'expo-sensors';
 import axios from 'axios';
-import * as Notifications from 'expo-notifications';
-import registerNNPushToken from 'native-notify';
+// import * as Notifications from 'expo-notifications';
+// import registerNNPushToken from 'native-notify';
 import { useRouter } from 'expo-router';
 
 const RootLayout = () => {
@@ -43,22 +43,22 @@ const RootLayout = () => {
   const router = useRouter(); // Use useRouter from expo-router
 
   // Register Native Notify token
-  registerNNPushToken(23095, 't7U6tMbwevUKc9gC7Eddsf');
-  useEffect(() => {
+  // registerNNPushToken(23095, 't7U6tMbwevUKc9gC7Eddsf');
+  // useEffect(() => {
 
-    // Handle incoming notifications
-    const subscription = Notifications.addNotificationResponseReceivedListener(response => {
-      // console.log('Notification Data:', response.notification.request.content);
-      const { screen } = response.notification.request.content.data;
-      console.log(screen);
-      if (screen) {
-        // Navigate to the specific screen using Expo Router
-        router.push('/emergency');
-      }
-    });
+  //   // Handle incoming notifications
+  //   const subscription = Notifications.addNotificationResponseReceivedListener(response => {
+  //     // console.log('Notification Data:', response.notification.request.content);
+  //     const { screen } = response.notification.request.content.data;
+  //     console.log(screen);
+  //     if (screen) {
+  //       // Navigate to the specific screen using Expo Router
+  //       router.push('/emergency');
+  //     }
+  //   });
 
-    return () => subscription.remove();
-  }, []);
+  //   return () => subscription.remove();
+  // }, []);
 
   const [fontsLoaded, error] = useFonts({
     "Poppins-Black": require("../assets/fonts/Poppins-Black.ttf"),

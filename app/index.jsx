@@ -1,13 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text } from 'react-native';
-import { Link, useRouter } from 'expo-router'; // Import useRouter from expo-router
-import registerNNPushToken from 'native-notify';
+import { View, Text ,Image,ScrollView} from 'react-native';
+import { useRouter } from 'expo-router'; // Import useRouter from expo-router
 import { Accelerometer } from 'expo-sensors';
-import * as Notifications from 'expo-notifications';
 import axios from 'axios';
+import { SafeAreaView } from "react-native-safe-area-context";
+import { StatusBar } from 'expo-status-bar';
+
+import  images  from '../constant/images.js';
+import  CustomButton  from '../components/CustomButton.jsx';
+import  Loader  from '../components/Loader.jsx';
+
 
 const Home = () => {
   const [isEmergency, setIsEmergency] = useState(false);
+  const [ loading, isLogged ] = useState(true);
+
+  const router = useRouter();
+
+  setTimeout(()=>{
+    isLogged(false);
+  },3000);
+
 
 
   useEffect(() => {
@@ -47,20 +60,56 @@ const Home = () => {
   };
 
   return (
-    <View className='flex-1 items-center justify-center bg-black p-10'>
-      <Text className='text-white text-3xl bg-[#f01d71] p-5 mt-10'>
-        My Home Page
-      </Text>
-      <Text className='text-4xl text-white my-5 font-semibold'>
-        Welcome to my Page
-      </Text>
-      <Link
-        href="/home"
-        className='text-white border-4 border-red-600 text-3xl bg-[#f01d71] rounded-2xl p-5 mt-10'
+    <SafeAreaView className="bg-primary h-full">
+      <Loader isLoading={loading} />
+
+      <ScrollView
+        contentContainerStyle={{
+          height: "100%",
+        }}
       >
-        Profile
-      </Link>
-    </View>
+        <View className="w-full flex justify-center items-center h-full px-4">
+          <Image
+            source={images.logo}
+            className="w-[130px] h-[84px]"
+            resizeMode="contain"
+          />
+
+          <Image
+            source={images.cards}
+            className="max-w-[380px] w-full h-[298px]"
+            resizeMode="contain"
+          />
+
+          <View className="relative mt-5">
+            <Text className="text-3xl text-white font-bold text-center">
+              Discover Endless{"\n"}
+              Possibilities with{" "}
+              <Text className="text-secondary-200">Aora</Text>
+            </Text>
+
+            <Image
+              source={images.path}
+              className="w-[136px] h-[15px] absolute -bottom-2 -right-8"
+              resizeMode="contain"
+            />
+          </View>
+
+          <Text className="text-sm font-pregular text-gray-100 mt-7 text-center">
+            Where Creativity Meets Innovation: Embark on a Journey of Limitless
+            Exploration with Aora
+          </Text>
+
+          <CustomButton
+            title="Continue with Email"
+            handlePress={() => router.push("/sign-in")}
+            containerStyles="w-full mt-7"
+          />
+        </View>
+      </ScrollView>
+
+      <StatusBar backgroundColor="#161622" style="light" />
+    </SafeAreaView>
   );
 };
 

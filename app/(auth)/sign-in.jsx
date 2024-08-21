@@ -1,54 +1,110 @@
-// Create a sign in page for the user to sign in for an account
-// This page will have a form for the user to fill out with their information
-// This information will be stored in the database
-// The user will be able to navigate to the sign in page from this page
-// Use tailwind css for styling
+import React, { useState } from 'react';
+import { Link, useRouter } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { View, Text, ScrollView, Dimensions,Alert, Image } from "react-native";
 
-// import React, { useState } from 'react';
-// import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
-// import { Link } from 'expo-router';
+import  images  from "../../constant/images.js";
+import  CustomButton  from "../../components/CustomButton.jsx";
+import  FormField  from "../../components/FormField.jsx";
 
-// const SignIn = () => {
-//     const [email, setEmail] = useState('');
-//     const [password, setPassword] = useState('');
+const SignIn = () => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const router = useRouter();
 
-//     const handleSubmit = () => {
-//         // Submit the form
-//         console.log('Email:', email);
-//         console.log('Password:', password);
-//     };
+    const [isSubmitting, setSubmitting] = useState(false);
 
-//     return (
-//         // Use tailwind css for styling
-//         <View className='flex-1 items-center justify-center bg-black p-10 text-white'>
-//             <Text className='text-white text-3xl bg-[#f01d71] p-5 mt-10'>Sign In</Text>
-//             <TextInput
-//                 style={styles.input}
-//                 placeholder='Email'
-//                 value={email}
-//                 onChangeText={setEmail}
-//             />
-//             <TextInput
-//                 style={styles.input}
-//                 placeholder='Password'
-//                 value={password}
-//                 onChangeText={setPassword}
-//                 secureTextEntry
-//             />
-//             <Button title='Sign In' onPress={handleSubmit} />
-//             <Link href='/sign-up' className='text-white border-4 border-red-600 text-3xl bg-[#f01d71] rounded-2xl p-5 mt-10'>Sign Up</Link>
-//         </View>
-//     );
-// }
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+  });
 
-// const styles = StyleSheet.create({
-//     input: {
-//         backgroundColor: '#333',
-//         color: 'white',
-//         padding: 10,
-//         margin: 10,
-//         width: '100%',
-//     },
-// });
+  const submit = async () => {
+    if (form.email === "" || form.password === "") {
+      Alert.alert("Error", "Please fill in all fields");
+    }
 
-// export default SignIn;
+    setSubmitting(true);
+
+    try {
+      await signIn(form.email, form.password);
+      const result = await getCurrentUser();
+      setUser(result);
+      setIsLogged(true);
+
+      Alert.alert("Success", "User signed in successfully");
+      router.replace("/home");
+    } catch (error) {
+      Alert.alert("Error", error.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+    const handleSubmit = () => {
+        // Submit the form
+        console.log('Email:', email);
+        console.log('Password:', password);
+    };
+
+    return (
+        // Use tailwind css for styling
+        <SafeAreaView className="bg-primary h-full">
+      <ScrollView>
+        <View
+          className="w-full flex justify-center h-full px-4 my-6"
+          style={{
+            minHeight: Dimensions.get("window").height - 100,
+          }}
+        >
+          <Image
+            source={images.logo}
+            resizeMode="contain"
+            className="w-[115px] h-[34px]"
+          />
+
+          <Text className="text-2xl font-semibold text-white mt-10 font-psemibold">
+            Log in to Aora
+          </Text>
+
+          <FormField
+            title="Email"
+            value={form.email}
+            handleChangeText={(e) => setForm({ ...form, email: e })}
+            otherStyles="mt-7"
+            keyboardType="email-address"
+          />
+
+          <FormField
+            title="Password"
+            value={form.password}
+            handleChangeText={(e) => setForm({ ...form, password: e })}
+            otherStyles="mt-7"
+          />
+
+          <CustomButton
+            title="Sign In"
+            handlePress={submit}
+            containerStyles="mt-7"
+            isLoading={isSubmitting}
+          />
+
+          <View className="flex justify-center pt-5 flex-row gap-2">
+            <Text className="text-lg text-gray-100 font-pregular">
+              Don't have an account?
+            </Text>
+            <Link
+              href="/sign-up"
+              className="text-lg font-psemibold text-secondary"
+            >
+              Signup
+            </Link>
+          </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+    );
+}
+
+
+export default SignIn;

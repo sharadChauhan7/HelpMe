@@ -1,8 +1,4 @@
-// Create a sign in page for the user to sign up for an account
-// This page will have a form for the user to fill out with their information
-// This information will be stored in the database
-// The user will be able to navigate to the sign in page from this page
-// Use tailwind css for styling
+
 
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
