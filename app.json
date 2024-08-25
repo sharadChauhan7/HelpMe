@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "HelpMe",
+    "backgroundFetchInterval": 15,
     "slug": "HelpMe",
     "scheme": "HelpMe",
     "version": "1.0.0",

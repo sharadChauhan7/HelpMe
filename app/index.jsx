@@ -1,43 +1,83 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text ,Image,ScrollView} from 'react-native';
-import { useRouter } from 'expo-router'; // Import useRouter from expo-router
+import { View, Text, Image, ScrollView } from 'react-native';
+import { useRouter } from 'expo-router';
 import { Accelerometer } from 'expo-sensors';
 import axios from 'axios';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from 'expo-status-bar';
 
-import  images  from '../constant/images.js';
-import  CustomButton  from '../components/CustomButton.jsx';
-import  Loader  from '../components/Loader.jsx';
+import images from '../constant/images.js';
+import CustomButton from '../components/CustomButton.jsx';
+import Loader from '../components/Loader.jsx';
 
+import * as TaskManager from 'expo-task-manager';
+import * as BackgroundFetch from 'expo-background-fetch';
 
 const Home = () => {
   const [isEmergency, setIsEmergency] = useState(false);
-  const [ loading, isLogged ] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   const router = useRouter();
 
-  setTimeout(()=>{
-    isLogged(false);
-  },3000);
-
-
-
   useEffect(() => {
-    const handleShake = (acceleration) => {
-      if (!isEmergency && (acceleration.x > 5 || acceleration.y > 5 || acceleration.z > 5)) {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const EMERGENCY_SHAKE_TASK = 'EMERGENCY_SHAKE_TASK';
+
+  // Define the background task
+  TaskManager.defineTask(EMERGENCY_SHAKE_TASK, ({ data, error }) => {
+    if (error) {
+      console.error("TaskManager error:", error);
+      return;
+    }
+
+    if (data) {
+      const { x, y, z } = data.acceleration;
+
+      if (!isEmergency && (x > 5 || y > 5 || z > 5)) {
         setIsEmergency(true);
         sendAlert();
       }
+    }
+  });
+
+  // Register the background task
+  useEffect(() => {
+    const startBackgroundTask = async () => {
+      try {
+        const isRegistered = await TaskManager.isTaskRegisteredAsync(EMERGENCY_SHAKE_TASK);
+        if (!isRegistered) {
+          await BackgroundFetch.registerTaskAsync(EMERGENCY_SHAKE_TASK, {
+            minimumInterval: 5, // Minimum time in seconds between background fetches
+            stopOnTerminate: false, // Continue running when app is closed
+          });
+        }
+
+        // Start the accelerometer to detect shakes
+        const subscription = Accelerometer.addListener((acceleration) => {
+          if (!isEmergency && (acceleration.x > 5 || acceleration.y > 5 || acceleration.z > 5)) {
+            setIsEmergency(true);
+            sendAlert();
+          }
+        });
+
+        return () => subscription.remove(); // Cleanup on component unmount
+      } catch (err) {
+        console.error("Background task registration failed:", err);
+      }
     };
 
-    const subscription = Accelerometer.addListener(handleShake);
-    return () => subscription.remove();
+    startBackgroundTask();
   }, [isEmergency]);
 
   const sendAlert = async () => {
     try {
-      console.log("Emergency");
+      console.log("Emergency detected");
 
       let data = {
         location: "demoLocation",
@@ -51,7 +91,7 @@ const Home = () => {
       }, 10000);
 
     } catch (err) {
-      console.log(err.message);
+      console.log("Error sending alert:", err.message);
 
       setTimeout(() => {
         setIsEmergency(false);
@@ -102,7 +142,7 @@ const Home = () => {
 
           <CustomButton
             title="Continue with Email"
-            handlePress={() => router.push("/sign-in")}
+            handlePress={() => router.push("/home")}
             containerStyles="w-full mt-7"
           />
         </View>

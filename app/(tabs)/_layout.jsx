@@ -79,6 +79,21 @@ const TabLayout = () => {
             ),
           }}
         />
+        <Tabs.Screen
+          name="map"
+          options={{
+            title: "Map",
+            headerShown: false,
+            tabBarIcon: ({ color, focused }) => (
+              <TabIcon
+                icon={icons.profile}
+                color={color}
+                name="Map"
+                focused={focused}
+              />
+            ),
+          }}
+        />
       </Tabs>
 
       {/* <Loader isLoading={loading} />

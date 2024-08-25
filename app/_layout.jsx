@@ -11,12 +11,14 @@ import axios from 'axios';
 // import * as Notifications from 'expo-notifications';
 // import registerNNPushToken from 'native-notify';
 import { useRouter } from 'expo-router';
+import registerNNPushToken from 'native-notify';
 
 const RootLayout = () => {
   const [contacts, setContacts] = useState([]);
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
 
+  registerNNPushToken(23095,'t7U6tMbwevUKc9gC7Eddsf');
   useEffect(() => {
     (async () => {
       const { status } = await Contacts.requestPermissionsAsync();
