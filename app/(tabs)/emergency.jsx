@@ -1,44 +1,44 @@
 import { View, Text } from 'react-native'
 import React from 'react'
-import Voice from 'react-native-voice';
+// import Voice from 'react-native-voice';
 import { useEffect, useState } from 'react';
 import { Button } from 'react-native';
 import axios from 'axios';
 
 const emergency = () => {
-    const [results, setResults] = useState([]);
-  const [isListening, setIsListening] = useState(false);
-  const [helpCount, setHelpCount] = useState(0);
-  useEffect(() => {
-    Voice.onSpeechResults = onSpeechResults;
-    return () => {
-      Voice.destroy().then(Voice.removeAllListeners);
-    };
-  }, []);
+  //   const [results, setResults] = useState([]);
+  // const [isListening, setIsListening] = useState(false);
+  // const [helpCount, setHelpCount] = useState(0);
+  // useEffect(() => {
+  //   Voice.onSpeechResults = onSpeechResults;
+  //   return () => {
+  //     Voice.destroy().then(Voice.removeAllListeners);
+  //   };
+  // }, []);
 
-  const onSpeechResults = (e) => {
-    const newResults = e.value;
-    setResults(newResults);
-    checkForHelpWord(newResults);
-  };
+  // const onSpeechResults = (e) => {
+  //   const newResults = e.value;
+  //   setResults(newResults);
+  //   checkForHelpWord(newResults);
+  // };
 
-  const checkForHelpWord = (transcriptions) => {
-    let count = helpCount;
+  // const checkForHelpWord = (transcriptions) => {
+  //   let count = helpCount;
     
-    // Count occurrences of the word 'help' in the transcription
-    transcriptions.forEach((transcription) => {
-      const matches = transcription.toLowerCase().match(/\bhelp\b/g);
-      if (matches) {
-        count += matches.length;
-      }
-    });
+  //   // Count occurrences of the word 'help' in the transcription
+  //   transcriptions.forEach((transcription) => {
+  //     const matches = transcription.toLowerCase().match(/\bhelp\b/g);
+  //     if (matches) {
+  //       count += matches.length;
+  //     }
+  //   });
 
-    setHelpCount(count);
+  //   setHelpCount(count);
 
-    if (count >= 3) {
-      emergency();
-    }
-  };
+  //   if (count >= 3) {
+  //     emergency();
+  //   }
+  // };
 
   const emergency = async () => {
       try{

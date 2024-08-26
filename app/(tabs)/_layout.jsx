@@ -1,4 +1,4 @@
-import { View, Text, Image } from 'react-native'
+import { View, Text, Image, Button } from 'react-native'
 import React from 'react'
 import {Tabs ,Redirect} from 'expo-router'
 import  icons  from "../../constant/icons";
@@ -6,9 +6,10 @@ import { StatusBar } from "expo-status-bar";
 
 import { useState } from "react";
 import { Loader } from "../../components/Loader";
+import { useSession } from '../../context/ctx';
+
 
 const TabIcon = ({ icon, color, name, focused }) => {
-
   return (
     <View className="flex items-center justify-center gap-2">
       <Image
@@ -31,11 +32,17 @@ const TabLayout = () => {
   const [isLogged, setIsLogged] = useState(true);
   const [loading, setLoading] = useState(false);
   // const { loading, isLogged } = useGlobalContext();
+  const { session, isLoading,signOut } = useSession();
+  console.log(session);
+  if (isLoading) {
+    return <Text>Loading...</Text>;
+  }
 
-  if (!loading && !isLogged) return <Redirect href="/sign-in" />;
+  if (!session) return <Redirect href="/sign-in" />;
 
   return (
     <>
+      <Button title="Sign Out" onPress={signOut} />
       <Tabs
         screenOptions={{
           tabBarActiveTintColor: "#FFA001",

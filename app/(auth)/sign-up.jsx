@@ -1,59 +1,112 @@
-
-
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
-import { Link } from 'expo-router';
+import { Link, useRouter } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { View, Text, ScrollView, Dimensions,Alert, Image } from "react-native";
+
+import  images  from "../../constant/images.js";
+import  CustomButton  from "../../components/CustomButton.jsx";
+import  FormField  from "../../components/FormField.jsx";
+import { useSession } from '../../context/ctx.jsx';
 
 const SignUp = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    
-    const handleSubmit = () => {
+    const router = useRouter();
+    const { signIn } = useSession();
+    const [isSubmitting, setSubmitting] = useState(false);
+
+  const [form, setForm] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    password: "",
+    emergencyContact: "",
+  });
+    const submit = () => {
         // Submit the form
-        console.log('Email:', email);
-        console.log('Password:', password);
-        console.log('Confirm Password:', confirmPassword);
+        console.log('Email:', form.email);
+        console.log('Password:', form.password);
     };
     
     return (
         // Use tailwind css for styling
-        <View className='flex-1 items-center justify-center bg-black p-10 text-white'>
-            <Text className='text-white text-3xl bg-[#f01d71] p-5 mt-10'>Sign Up</Text>
-            <TextInput
-                style={styles.input}
-                placeholder='Email'
-                value={email}
-                onChangeText={setEmail}
+        <SafeAreaView className="bg-primary h-full">
+      <ScrollView>
+        <View
+          className="w-full flex justify-center h-full px-4 my-6"
+          style={{
+            minHeight: Dimensions.get("window").height - 100,
+          }}
+        >
+          <Image
+            source={images.logo}
+            resizeMode="contain"
+            className="w-[115px] h-[34px]"
+          />
+
+          <Text className="text-2xl font-semibold text-white mt-10 font-psemibold">
+            Sign up to Aora
+          </Text>
+          {/* Name field */}
+            <FormField
+                title="Name"
+                value={form.name}
+                handleChangeText={(e) => setForm({ ...form, name: e })}
+                otherStyles="mt-7"
             />
-            <TextInput
-                style={styles.input}
-                placeholder='Password'
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
+            {/* Phone field */}
+            <FormField
+                title="Phone"
+                value={form.phone}
+                handleChangeText={(e) => setForm({ ...form, phone: e })}
+                otherStyles="mt-7"
+                keyboardType="phone-pad"
             />
-            <TextInput
-                style={styles.input}
-                placeholder='Confirm Password'
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
-                secureTextEntry
+            {/* Emergency Contact Field */}
+
+            <FormField
+                title="Emergency Contact"
+                value={form.emergencyContact}
+                handleChangeText={(e) => setForm({ ...form, emergencyContact: e })}
+                otherStyles="mt-7"
+                keyboardType="phone-pad"
             />
-            <Button title='Sign Up' onPress={handleSubmit} />
-            <Link href='/sign-in' className='text-white border-4 border-red-600 text-3xl bg-[#f01d71] rounded-2xl p-5 mt-10'>Sign In</Link>
+            {/* Email field */}
+          <FormField
+            title="Email"
+            value={form.email}
+            handleChangeText={(e) => setForm({ ...form, email: e })}
+            otherStyles="mt-7"
+            keyboardType="email-address"
+          />
+
+          <FormField
+            title="Password"
+            value={form.password}
+            handleChangeText={(e) => setForm({ ...form, password: e })}
+            otherStyles="mt-7"
+          />
+
+          <CustomButton
+            title="Sign In"
+            handlePress={submit}
+            containerStyles="mt-7"
+            isLoading={isSubmitting}
+          />
+
+          <View className="flex justify-center pt-5 flex-row gap-2">
+            <Text className="text-lg text-gray-100 font-pregular">
+              Don't have an account?
+            </Text>
+            <Link
+              href="/sign-up"
+              className="text-lg font-psemibold text-secondary"
+            >
+              Signup
+            </Link>
+          </View>
         </View>
+      </ScrollView>
+    </SafeAreaView>
     );
 }
-
-const styles = StyleSheet.create({
-    input: {
-        backgroundColor: '#333',
-        color: 'white',
-        padding: 10,
-        margin: 10,
-        width: '100%',
-    },
-});
 
 export default SignUp;

@@ -4,43 +4,47 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Stack, SplashScreen } from 'expo-router';
 import { useFonts } from 'expo-font';
 import { StatusBar } from 'expo-status-bar';
-import * as Contacts from 'expo-contacts';
-import * as Location from 'expo-location';
-import { Accelerometer } from 'expo-sensors';
+// import * as Contacts from 'expo-contacts';
+// import * as Location from 'expo-location';
+// import { Accelerometer } from 'expo-sensors';
 import axios from 'axios';
+
 // import * as Notifications from 'expo-notifications';
 // import registerNNPushToken from 'native-notify';
 import { useRouter } from 'expo-router';
 import registerNNPushToken from 'native-notify';
 
+// Auth
+import {SessionProvider} from '../context/ctx';
+
 const RootLayout = () => {
-  const [contacts, setContacts] = useState([]);
-  const [location, setLocation] = useState(null);
-  const [errorMsg, setErrorMsg] = useState(null);
+  // const [contacts, setContacts] = useState([]);
+  // const [location, setLocation] = useState(null);
+  // const [errorMsg, setErrorMsg] = useState(null);
 
   registerNNPushToken(23095,'t7U6tMbwevUKc9gC7Eddsf');
-  useEffect(() => {
-    (async () => {
-      const { status } = await Contacts.requestPermissionsAsync();
-      if (status === 'granted') {
-        const { data } = await Contacts.getContactsAsync({
-          fields: [Contacts.Fields.PhoneNumbers],
-        });
-        if (data.length > 0) {
-          setContacts(data);
-        }
-      }
-    })();
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
-        return;
-      }
-      let currentLocation = await Location.getCurrentPositionAsync({});
-      setLocation(currentLocation);
-    })();
-  }, []);
+  // useEffect(() => {
+  //   (async () => {
+  //     const { status } = await Contacts.requestPermissionsAsync();
+  //     if (status === 'granted') {
+  //       const { data } = await Contacts.getContactsAsync({
+  //         fields: [Contacts.Fields.PhoneNumbers],
+  //       });
+  //       if (data.length > 0) {
+  //         setContacts(data);
+  //       }
+  //     }
+  //   })();
+  //   (async () => {
+  //     let { status } = await Location.requestForegroundPermissionsAsync();
+  //     if (status !== 'granted') {
+  //       setErrorMsg('Permission to access location was denied');
+  //       return;
+  //     }
+  //     let currentLocation = await Location.getCurrentPositionAsync({});
+  //     setLocation(currentLocation);
+  //   })();
+  // }, []);
 
   const router = useRouter(); // Use useRouter from expo-router
 
@@ -88,10 +92,12 @@ const RootLayout = () => {
 
   return (
     <>
+    <SessionProvider>
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
       </Stack>
       <StatusBar style="auto" />
+    </SessionProvider>
     </>
   );
 };

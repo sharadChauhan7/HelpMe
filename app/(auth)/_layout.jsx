@@ -6,15 +6,15 @@ import { StatusBar } from 'expo-status-bar'
 import { useState } from 'react'
 
 const AuthLayout = () => {
-  const [loading, setLoading] = useState(true);
-
-  setTimeout(()=>{
-    setLoading(false)
-  },2000);
+  const [loading, setLoading] = useState(false);
 
   return (
     <>
-    <Stack>
+    <Stack 
+    options={{
+      headerShown: false,
+    }}
+    >
     <Stack.Screen
       name="sign-in"
       options={{

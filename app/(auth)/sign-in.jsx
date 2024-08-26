@@ -6,32 +6,28 @@ import { View, Text, ScrollView, Dimensions,Alert, Image } from "react-native";
 import  images  from "../../constant/images.js";
 import  CustomButton  from "../../components/CustomButton.jsx";
 import  FormField  from "../../components/FormField.jsx";
+import { useSession } from '../../context/ctx.jsx';
 
 const SignIn = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
     const router = useRouter();
-
+    const { signIn } = useSession();
     const [isSubmitting, setSubmitting] = useState(false);
 
   const [form, setForm] = useState({
+    name: "",
+    phone: "",
     email: "",
     password: "",
+    emergencyContact: "",
   });
 
   const submit = async () => {
-    if (form.email === "" || form.password === "") {
+    if (form.email === "" || form.password === "" || form.name === "" || form.phone === "" || form.emergencyContact === "") {
       Alert.alert("Error", "Please fill in all fields");
     }
-
     setSubmitting(true);
-
     try {
-      await signIn(form.email, form.password);
-      const result = await getCurrentUser();
-      setUser(result);
-      setIsLogged(true);
-
+      signIn(form);
       Alert.alert("Success", "User signed in successfully");
       router.replace("/home");
     } catch (error) {
@@ -41,11 +37,6 @@ const SignIn = () => {
     }
   };
 
-    const handleSubmit = () => {
-        // Submit the form
-        console.log('Email:', email);
-        console.log('Password:', password);
-    };
 
     return (
         // Use tailwind css for styling
@@ -66,7 +57,6 @@ const SignIn = () => {
           <Text className="text-2xl font-semibold text-white mt-10 font-psemibold">
             Log in to Aora
           </Text>
-
           <FormField
             title="Email"
             value={form.email}
