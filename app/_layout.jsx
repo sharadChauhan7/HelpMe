@@ -22,7 +22,7 @@ const RootLayout = () => {
   // const [location, setLocation] = useState(null);
   // const [errorMsg, setErrorMsg] = useState(null);
 
-  registerNNPushToken(23095,'t7U6tMbwevUKc9gC7Eddsf');
+  // registerNNPushToken(23095,'t7U6tMbwevUKc9gC7Eddsf');
   // useEffect(() => {
   //   (async () => {
   //     const { status } = await Contacts.requestPermissionsAsync();
@@ -49,7 +49,7 @@ const RootLayout = () => {
   const router = useRouter(); // Use useRouter from expo-router
 
   // Register Native Notify token
-  // registerNNPushToken(23095, 't7U6tMbwevUKc9gC7Eddsf');
+  registerNNPushToken(23095, 't7U6tMbwevUKc9gC7Eddsf');
   // useEffect(() => {
 
   //   // Handle incoming notifications

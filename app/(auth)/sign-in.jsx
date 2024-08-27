@@ -14,11 +14,8 @@ const SignIn = () => {
     const [isSubmitting, setSubmitting] = useState(false);
 
   const [form, setForm] = useState({
-    name: "",
-    phone: "",
     email: "",
     password: "",
-    emergencyContact: "",
   });
 
   const submit = async () => {

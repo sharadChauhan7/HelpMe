@@ -6,7 +6,7 @@ import { StatusBar } from "expo-status-bar";
 
 import { useState } from "react";
 import { Loader } from "../../components/Loader";
-import { useSession } from '../../context/ctx';
+import { useSession,useUserData } from '../../context/ctx';
 
 
 const TabIcon = ({ icon, color, name, focused }) => {
@@ -29,16 +29,17 @@ const TabIcon = ({ icon, color, name, focused }) => {
 };
 
 const TabLayout = () => {
-  const [isLogged, setIsLogged] = useState(true);
-  const [loading, setLoading] = useState(false);
+  // const [isLogged, setIsLogged] = useState(true);
+  // const [loading, setLoading] = useState(false);
   // const { loading, isLogged } = useGlobalContext();
   const { session, isLoading,signOut } = useSession();
-  console.log(session);
+  console.log("Layout -> "+session);
+
   if (isLoading) {
     return <Text>Loading...</Text>;
   }
 
-  if (!session) return <Redirect href="/sign-in" />;
+  if (!session) return <Redirect href="/sign-up" />;
 
   return (
     <>

@@ -10,7 +10,7 @@ import { useSession } from '../../context/ctx.jsx';
 
 const SignUp = () => {
     const router = useRouter();
-    const { signIn } = useSession();
+    const { signUp } = useSession();
     const [isSubmitting, setSubmitting] = useState(false);
 
   const [form, setForm] = useState({
@@ -20,10 +20,22 @@ const SignUp = () => {
     password: "",
     emergencyContact: "",
   });
-    const submit = () => {
-        // Submit the form
-        console.log('Email:', form.email);
-        console.log('Password:', form.password);
+    const submit = async () => {
+        if (form.email === "" || form.password === "" || form.name === "" || form.phone === "" || form.emergencyContact === "") {
+          Alert.alert("Error", "Please fill in all fields");
+        }
+        setSubmitting(true);
+        try {
+          await signUp(form);
+          Alert.alert("Success", "User signed in successfully");
+          router.replace("/home");
+        } catch (error) {
+          // Get the error message from the error object
+          console.dir(error)
+          Alert.alert("Error", error.message);
+        } finally {
+          setSubmitting(false);
+        }
     };
     
     return (
@@ -86,7 +98,7 @@ const SignUp = () => {
           />
 
           <CustomButton
-            title="Sign In"
+            title="Sign Up"
             handlePress={submit}
             containerStyles="mt-7"
             isLoading={isSubmitting}
@@ -97,10 +109,10 @@ const SignUp = () => {
               Don't have an account?
             </Text>
             <Link
-              href="/sign-up"
+              href="/sign-in"
               className="text-lg font-psemibold text-secondary"
             >
-              Signup
+              Signin
             </Link>
           </View>
         </View>

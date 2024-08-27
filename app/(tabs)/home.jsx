@@ -5,6 +5,8 @@ import * as Location from 'expo-location';
 import * as Contacts from 'expo-contacts';
 
 import { Platform } from 'react-native';
+import axios from 'axios';
+
 
 function home() {
     // const [contacts, setContacts] = useState([]);
@@ -48,6 +50,7 @@ function home() {
             return;
         }
         console.log("Emergency");
+        sendAlert();
         // console.log(contacts);
         console.log(location);
     }
@@ -55,6 +58,29 @@ function home() {
 
         console.log("FalseTrue");
     }
+    const sendAlert = async () => {
+      try {
+        console.log("Emergency detected");
+  
+        let data = {
+          location: "demoLocation",
+        };
+  
+        let res = await axios.post('http://192.168.1.4:3000/getHelp', data);
+        console.log(res);
+  
+        setTimeout(() => {
+          // setIsEmergency(false);
+        }, 10000);
+  
+      } catch (err) {
+        console.log("Error sending alert:", err.message);
+  
+        setTimeout(() => {
+          // setIsEmergency(false);
+        }, 10000);
+      }
+    };
 
     return (
         // Your component UI
