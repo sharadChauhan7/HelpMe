@@ -13,6 +13,7 @@ import axios from 'axios';
 // import registerNNPushToken from 'native-notify';
 import { useRouter } from 'expo-router';
 import registerNNPushToken from 'native-notify';
+import * as Location from 'expo-location';
 
 // Auth
 import {SessionProvider} from '../context/ctx';
@@ -23,33 +24,12 @@ const RootLayout = () => {
   // const [errorMsg, setErrorMsg] = useState(null);
 
   // registerNNPushToken(23095,'t7U6tMbwevUKc9gC7Eddsf');
-  // useEffect(() => {
-  //   (async () => {
-  //     const { status } = await Contacts.requestPermissionsAsync();
-  //     if (status === 'granted') {
-  //       const { data } = await Contacts.getContactsAsync({
-  //         fields: [Contacts.Fields.PhoneNumbers],
-  //       });
-  //       if (data.length > 0) {
-  //         setContacts(data);
-  //       }
-  //     }
-  //   })();
-  //   (async () => {
-  //     let { status } = await Location.requestForegroundPermissionsAsync();
-  //     if (status !== 'granted') {
-  //       setErrorMsg('Permission to access location was denied');
-  //       return;
-  //     }
-  //     let currentLocation = await Location.getCurrentPositionAsync({});
-  //     setLocation(currentLocation);
-  //   })();
-  // }, []);
+
 
   const router = useRouter(); // Use useRouter from expo-router
 
   // Register Native Notify token
-  registerNNPushToken(23095, 't7U6tMbwevUKc9gC7Eddsf');
+  // registerNNPushToken(23095, 't7U6tMbwevUKc9gC7Eddsf');
   // useEffect(() => {
 
   //   // Handle incoming notifications
@@ -65,7 +45,15 @@ const RootLayout = () => {
 
   //   return () => subscription.remove();
   // }, []);
-
+useEffect(()=>{
+  (async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      setErrorMsg('Permission to access location was denied');
+      return;
+    }
+  })();
+})
   const [fontsLoaded, error] = useFonts({
     "Poppins-Black": require("../assets/fonts/Poppins-Black.ttf"),
     "Poppins-Bold": require("../assets/fonts/Poppins-Bold.ttf"),
@@ -95,6 +83,9 @@ const RootLayout = () => {
     <SessionProvider>
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+
       </Stack>
       <StatusBar style="auto" />
     </SessionProvider>

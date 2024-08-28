@@ -3,8 +3,24 @@ import React from 'react'
 import { useState,useEffect } from 'react';
 import MapView ,{Marker,Circle}from 'react-native-maps';
 import { StyleSheet, View } from 'react-native';
+import {getLocation} from '../../util/permission'
+import * as Location from 'expo-location';
 
 const map = () => {
+
+    useEffect(()=>{
+      async function currLocation(){
+        console.log("currLocation");
+        let location = await getLocation(Location);
+        setMapRegion({
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        });
+      }
+      currLocation();
+    },[]);
     let [mapRegion, setMapRegion] = useState({
         latitude: 27.4488793,
         longitude: 77.6877008,
@@ -17,12 +33,7 @@ const map = () => {
         region={mapRegion}
         onRegionChangeComplete={mapRegion => setMapRegion(mapRegion)}
       >
-        <Marker coordinate={{ latitude: 27.4488793, longitude: 77.6877008 }} />
-        <Circle
-          center={{ latitude: 27.4488793, longitude: 77.6877008 }}
-          radius={1000}
-          fillColor={'rgba(220, 10, 10, 0.3)'}
-        />
+        <Marker coordinate={{ latitude: mapRegion.latitude, longitude: mapRegion.longitude }} />
         </MapView>
     </View>
   )

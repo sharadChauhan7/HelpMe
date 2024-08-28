@@ -7,6 +7,9 @@ import  images  from "../../constant/images.js";
 import  CustomButton  from "../../components/CustomButton.jsx";
 import  FormField  from "../../components/FormField.jsx";
 import { useSession } from '../../context/ctx.jsx';
+import {getLocation} from '../../util/permission'
+import * as Location from 'expo-location';
+import AccordionItem from '../../components/Accordion.jsx';
 
 const SignUp = () => {
     const router = useRouter();
@@ -18,12 +21,14 @@ const SignUp = () => {
     phone: "",
     email: "",
     password: "",
-    emergencyContact: "",
+    location:""
   });
     const submit = async () => {
         if (form.email === "" || form.password === "" || form.name === "" || form.phone === "" || form.emergencyContact === "") {
           Alert.alert("Error", "Please fill in all fields");
         }
+        form.location = await getLocation(Location);
+        form.emergencyContact = contacts;
         setSubmitting(true);
         try {
           await signUp(form);
@@ -37,6 +42,19 @@ const SignUp = () => {
           setSubmitting(false);
         }
     };
+    let [contacts,setContacts] = useState([]);
+    let [emergencyContact,setEmergencyContact] = useState({name:"",phone:""});
+
+    const addContact = (e)=>{
+      // Push the new contact to the contacts array
+      console.log(contacts);
+      setContacts([...contacts,{name:emergencyContact.name,phone:emergencyContact.phone}]);
+
+      // Reset the emergency contact
+      setEmergencyContact({name:"",phone:""});
+      Alert.alert("Success", `${emergencyContact.name}'s added successfully`);      
+      
+    }
     
     return (
         // Use tailwind css for styling
@@ -74,13 +92,36 @@ const SignUp = () => {
             />
             {/* Emergency Contact Field */}
 
-            <FormField
+            {/* <FormField
                 title="Emergency Contact"
                 value={form.emergencyContact}
                 handleChangeText={(e) => setForm({ ...form, emergencyContact: e })}
                 otherStyles="mt-7"
                 keyboardType="phone-pad"
+            /> */}
+            <AccordionItem
+                title="Emergency Contacts"
+                label={"Note: Can add multiple contacts"}
+            >
+              <FormField
+                title="Name"
+                value={emergencyContact.name}
+                handleChangeText={(e) => setEmergencyContact({ ...emergencyContact, name: e })}
+                otherStyles="mt-7"
+            /> 
+            <FormField
+                title="Emergency Contact"
+                value={emergencyContact.phone}
+                handleChangeText={(e) => setEmergencyContact({ ...emergencyContact, phone: e })}
+                otherStyles="mt-7"
+                keyboardType="phone-pad"
+            /> 
+            <CustomButton
+            title={"Add Contact"}
+            handlePress={addContact}
+            containerStyles="mt-7"
             />
+              </AccordionItem>
             {/* Email field */}
           <FormField
             title="Email"

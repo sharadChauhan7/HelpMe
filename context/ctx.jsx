@@ -26,10 +26,16 @@ export function SessionProvider({ children }) {
   return (
     <AuthContext.Provider
       value={{
-        signIn: (data) => {
+        signIn: async (data) => {
           // Perform sign-in logic here
           console.log(data);
-          setSession('xxx');
+          let result = await axios.post('http://192.168.1.4:3000/api/auth/login',data);  
+          if(result.status!=200){
+              console.log(result.data.message);
+              throw new Error(result.data.message);
+          }
+          console.log("Api Result"+result.data);
+          setSession(result.data.token);
         },
         signUp: async (data) => {
               console.log('Sending signUp req');

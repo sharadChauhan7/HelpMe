@@ -3,48 +3,20 @@ import React, { useState, useEffect } from 'react';
 import {Voice} from 'react-native';
 import * as Location from 'expo-location';
 import * as Contacts from 'expo-contacts';
-
+import {getLocation} from '../../util/permission'
 import { Platform } from 'react-native';
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useSession } from '../../context/ctx';
 import axios from 'axios';
 
 
-function home() {
-    // const [contacts, setContacts] = useState([]);
 
-    
-    const [contacts, setContacts] = useState([]);
-
-    useEffect(() => {
-      (async () => {
-        const { status } = await Contacts.requestPermissionsAsync();
-        if (status === 'granted') {
-          const { data } = await Contacts.getContactsAsync({
-            fields: [Contacts.Fields.PhoneNumbers],
-          });
-  
-          if (data.length > 0) {
-            setContacts(data);
-          }
-        }
-      })();
-      (async () => {
-        let { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') {
-          setErrorMsg('Permission to access location was denied');
-          return;
-        }
-  
-        let currentLocation = await Location.getCurrentPositionAsync({});
-        setLocation(currentLocation);
-      })();
-      
-    }, []);
-
-    const [location, setLocation] = useState(null);
+function home() {    
   const [errorMsg, setErrorMsg] = useState(null);
+  const {session} = useSession();
 
 
-    function Emergency() {
+    async function Emergency() {
         if(errorMsg){
             console.log(errorMsg);
             return;
@@ -52,7 +24,7 @@ function home() {
         console.log("Emergency");
         sendAlert();
         // console.log(contacts);
-        console.log(location);
+        
     }
     function FalseTrue() {
 
@@ -62,11 +34,11 @@ function home() {
       try {
         console.log("Emergency detected");
   
-        let data = {
-          location: "demoLocation",
-        };
-  
-        let res = await axios.post('http://192.168.1.4:3000/getHelp', data);
+        let userData = await axios.post('http://192.168.1.4:3000/api/auth/user',{token:session});
+        userData = userData.data.user;
+
+        userData.location = await getLocation(Location);
+        let res = await axios.post('http://192.168.1.4:3000/api/help/sos', userData);
         console.log(res);
   
         setTimeout(() => {

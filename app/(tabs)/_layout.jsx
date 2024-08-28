@@ -6,7 +6,8 @@ import { StatusBar } from "expo-status-bar";
 
 import { useState } from "react";
 import { Loader } from "../../components/Loader";
-import { useSession,useUserData } from '../../context/ctx';
+import { useSession } from '../../context/ctx';
+import { SafeAreaView } from "react-native-safe-area-context";
 
 
 const TabIcon = ({ icon, color, name, focused }) => {
@@ -29,9 +30,6 @@ const TabIcon = ({ icon, color, name, focused }) => {
 };
 
 const TabLayout = () => {
-  // const [isLogged, setIsLogged] = useState(true);
-  // const [loading, setLoading] = useState(false);
-  // const { loading, isLogged } = useGlobalContext();
   const { session, isLoading,signOut } = useSession();
   console.log("Layout -> "+session);
 
@@ -39,11 +37,13 @@ const TabLayout = () => {
     return <Text>Loading...</Text>;
   }
 
-  if (!session) return <Redirect href="/sign-up" />;
+  if (!session) return <Redirect href="/sign-in" />;
 
   return (
     <>
-      <Button title="Sign Out" onPress={signOut} />
+    <SafeAreaView className="bg-primary h-full">
+
+      <View><Button title="Sign Out" onPress={signOut} /></View>
       <Tabs
         screenOptions={{
           tabBarActiveTintColor: "#FFA001",
@@ -55,8 +55,9 @@ const TabLayout = () => {
             borderTopColor: "#232533",
             height: 84,
           },
+          headerShown:false,
         }}
-      >
+        >
         <Tabs.Screen
           name="home"
           options={{
@@ -64,14 +65,14 @@ const TabLayout = () => {
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <TabIcon
-                icon={icons.home}
-                color={color}
-                name="Home"
-                focused={focused}
+              icon={icons.home}
+              color={color}
+              name="Home"
+              focused={focused}
               />
             ),
           }}
-        />
+          />
         <Tabs.Screen
           name="profile"
           options={{
@@ -79,14 +80,14 @@ const TabLayout = () => {
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <TabIcon
-                icon={icons.profile}
-                color={color}
-                name="Profile"
-                focused={focused}
+              icon={icons.profile}
+              color={color}
+              name="Profile"
+              focused={focused}
               />
             ),
           }}
-        />
+          />
         <Tabs.Screen
           name="map"
           options={{
@@ -94,18 +95,19 @@ const TabLayout = () => {
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <TabIcon
-                icon={icons.profile}
-                color={color}
-                name="Map"
-                focused={focused}
+              icon={icons.profile}
+              color={color}
+              name="Map"
+              focused={focused}
               />
             ),
           }}
-        />
+          />
       </Tabs>
 
       {/* <Loader isLoading={loading} />
       <StatusBar backgroundColor="#161622" style="light" /> */}
+      </SafeAreaView>
     </>)
 }
 

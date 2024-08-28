@@ -7,6 +7,8 @@ import  images  from "../../constant/images.js";
 import  CustomButton  from "../../components/CustomButton.jsx";
 import  FormField  from "../../components/FormField.jsx";
 import { useSession } from '../../context/ctx.jsx';
+import {getLocation} from '../../util/permission'
+import * as Location from 'expo-location';
 
 const SignIn = () => {
     const router = useRouter();
@@ -16,15 +18,17 @@ const SignIn = () => {
   const [form, setForm] = useState({
     email: "",
     password: "",
+    location:""
   });
 
   const submit = async () => {
-    if (form.email === "" || form.password === "" || form.name === "" || form.phone === "" || form.emergencyContact === "") {
+    if (form.email === "" || form.password === "") {
       Alert.alert("Error", "Please fill in all fields");
     }
     setSubmitting(true);
     try {
-      signIn(form);
+      form.location = await getLocation(Location);
+      await signIn(form);
       Alert.alert("Success", "User signed in successfully");
       router.replace("/home");
     } catch (error) {

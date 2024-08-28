@@ -11,6 +11,10 @@ const AuthLayout = () => {
   return (
     <>
     <Stack 
+
+    screenOptions={{
+      headerShown:false,
+    }}
     options={{
       headerShown: false,
     }}

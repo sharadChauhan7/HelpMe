@@ -39,11 +39,10 @@ const Anomali = ({isTrue, isFalse}) => {
 
 
             <Pressable
-                className="rounded-2xl p-2 bg-blue-500 active:bg-blue-700"
+                className=" bg-red-600 w-52 h-52 rounded-full flex justify-center items-center b border-8 shadow-2xl shadow-red-500 border-white active:bg-red-500"
                 visible={modalVisible}
                 onPress={() => setModalVisible(true)}>
-
-                <Text className="text-2xl text-white p-2 font-bold text-center ">Generate Alert</Text>
+                <Text className="text-6xl text-white font-bold rounded-full text-center bg-transparent ">SOS</Text>
             </Pressable>
         </View>
 
