@@ -31,7 +31,6 @@ const TabIcon = ({ icon, color, name, focused }) => {
 
 const TabLayout = () => {
   const { session, isLoading,signOut } = useSession();
-  console.log("Layout -> "+session);
 
   if (isLoading) {
     return <Text>Loading...</Text>;

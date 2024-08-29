@@ -12,8 +12,10 @@ import Loader from '../components/Loader.jsx';
 
 import * as TaskManager from 'expo-task-manager';
 import * as BackgroundFetch from 'expo-background-fetch';
+import { registerNNPushToken } from 'native-notify';
 
 const Home = () => {
+
   const [isEmergency, setIsEmergency] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -75,8 +77,9 @@ const Home = () => {
         location: "demoLocation",
       };
 
-      let res = await axios.post('http://192.168.1.4:3000/getHelp', data);
-      console.log(res);
+      // let res = await axios.post('http://192.168.65.56:3000/getHelp', data);
+
+      console.log("Gesture Activated");
 
       setTimeout(() => {
         setIsEmergency(false);

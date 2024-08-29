@@ -34,12 +34,11 @@ function home() {
       try {
         console.log("Emergency detected");
   
-        let userData = await axios.post('http://192.168.1.4:3000/api/auth/user',{token:session});
+        let userData = await axios.post('http://192.168.65.56:3000/api/auth/user',{token:session});
         userData = userData.data.user;
 
         userData.location = await getLocation(Location);
-        let res = await axios.post('http://192.168.1.4:3000/api/help/sos', userData);
-        console.log(res);
+        let res = await axios.post('http://192.168.65.56:3000/api/help/sos', userData);
   
         setTimeout(() => {
           // setIsEmergency(false);

@@ -1,6 +1,6 @@
 // app/_layout.jsx (or RootLayout.jsx)
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet,Linking,Alert } from 'react-native';
 import { Stack, SplashScreen } from 'expo-router';
 import { useFonts } from 'expo-font';
 import { StatusBar } from 'expo-status-bar';
@@ -14,22 +14,34 @@ import axios from 'axios';
 import { useRouter } from 'expo-router';
 import registerNNPushToken from 'native-notify';
 import * as Location from 'expo-location';
+import { getPushDataObject } from 'native-notify';
+
 
 // Auth
 import {SessionProvider} from '../context/ctx';
 
 const RootLayout = () => {
-  // const [contacts, setContacts] = useState([]);
-  // const [location, setLocation] = useState(null);
-  // const [errorMsg, setErrorMsg] = useState(null);
-
-  // registerNNPushToken(23095,'t7U6tMbwevUKc9gC7Eddsf');
+  registerNNPushToken(23095, 't7U6tMbwevUKc9gC7Eddsf');
+  let pushDataObject = getPushDataObject();
+  useEffect(()=>{
+    console.log(pushDataObject.link);
+    // Parse pushDataObject from json string to object
+    // pushDataObject = json.parse(pushDataObject);r
+    async function redirect(){
+      const supported = await Linking.canOpenURL(pushDataObject.link);
+      if (supported) {
+        Linking.openURL(pushDataObject.link);
+      } else {
+        Alert.alert(`Don't know how to open this URL: ${pushDataObject.link}`);
+      }
+    }
+    redirect();
+  },[pushDataObject])
 
 
   const router = useRouter(); // Use useRouter from expo-router
 
   // Register Native Notify token
-  // registerNNPushToken(23095, 't7U6tMbwevUKc9gC7Eddsf');
   // useEffect(() => {
 
   //   // Handle incoming notifications
@@ -39,21 +51,32 @@ const RootLayout = () => {
   //     console.log(screen);
   //     if (screen) {
   //       // Navigate to the specific screen using Expo Router
+  //       con
   //       router.push('/emergency');
   //     }
   //   });
 
   //   return () => subscription.remove();
   // }, []);
-useEffect(()=>{
-  (async () => {
+  useEffect(()=>{
+    (async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') {
       setErrorMsg('Permission to access location was denied');
       return;
     }
   })();
-})
+  // Request for background location permission
+  // (async () => {
+  //   let { status } = await Location.requestBackgroundPermissionsAsync();
+  //   console.log("Granted")
+  //   if (status !== 'granted') {
+  //     setErrorMsg('Permission to access location was denied');
+  //     return;
+  //   }
+  // })();
+
+},[])
   const [fontsLoaded, error] = useFonts({
     "Poppins-Black": require("../assets/fonts/Poppins-Black.ttf"),
     "Poppins-Bold": require("../assets/fonts/Poppins-Bold.ttf"),
@@ -77,7 +100,6 @@ useEffect(()=>{
   if (!fontsLoaded && !error) {
     return null;
   }
-
   return (
     <>
     <SessionProvider>
