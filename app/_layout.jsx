@@ -21,7 +21,7 @@ import { getPushDataObject } from 'native-notify';
 import {SessionProvider} from '../context/ctx';
 
 const RootLayout = () => {
-  registerNNPushToken(23095, 't7U6tMbwevUKc9gC7Eddsf');
+  // registerNNPushToken(23095, 't7U6tMbwevUKc9gC7Eddsf');
   let pushDataObject = getPushDataObject();
   useEffect(()=>{
     console.log(pushDataObject.link);
@@ -104,7 +104,7 @@ const RootLayout = () => {
     <>
     <SessionProvider>
       <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="index" options={{ headerShown: false }}  />
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 

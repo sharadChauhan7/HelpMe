@@ -30,7 +30,7 @@ export function SessionProvider({ children }) {
         signIn: async (data) => {
           // Perform sign-in logic here
           console.log(data);
-          let result = await axios.post('http://192.168.65.56:3000/api/auth/login',data);  
+          let result = await axios.post('http://172.16.92.103:3000/api/auth/login',data);  
           if(result.status!=200){
               console.log(result.data.message);
               throw new Error(result.data.message);
@@ -43,7 +43,7 @@ export function SessionProvider({ children }) {
         signUp: async (data) => {
               console.log('Sending signUp req');
             // Call post request to local host 3000
-            let result = await axios.post('http://192.168.65.56:3000/api/auth/signup',data);  
+            let result = await axios.post('http://172.16.92.103:3000/api/auth/signup',data);  
             if(result.status!=200){
               console.log(result.data.message);
                 throw new Error(result.data.message);
@@ -54,7 +54,7 @@ export function SessionProvider({ children }) {
             setSession(result.data.token);
         },
         signOut: async () => {
-          let userData = await axios.post('http://192.168.65.56:3000/api/auth/user',{token:session});
+          let userData = await axios.post('http://172.16.92.103:3000/api/auth/user',{token:session});
         userData = userData.data.user;
         console.log("ctx->59"+userData.email); 
         await unregisterIndieDevice(userData.email,23095,'t7U6tMbwevUKc9gC7Eddsf');
